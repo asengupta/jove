@@ -1,7 +1,10 @@
-var some = new VersionedObject({ ghost: 1, text: "23"});
+var some = new VersionedObject({ ghost: 1, text: "23", birdie: [1,2,3, {phone: "232323"}]});
+var original = some;
 console.log(some);
 some = some.bump();
 some.ghost = 40;
+some.birdie[3].mobile = "3432434";
+some.birdie.push(4);
 console.log(some);
 some = some.previous();
 console.log(some);

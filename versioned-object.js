@@ -1,10 +1,18 @@
 function VersionedObject(json) {
-	for (var i in json) {
-		this[i] = json[i];
-	}
+	var self = this;
+	_.forIn(json, function(v, k) {
+		self[k] = v;
+	});
+
 	this.bump = function() {
-		return Object.create(this);
+		var finalObject = Object.create(this);
+		var deepClone = _.clone(this, true);
+		_.forIn(deepClone, function(value, property) {
+			finalObject[property] = value;
+		});
+		return finalObject;
 	};
+
 	this.previous = function() {
 		return Object.getPrototypeOf(this);
 	};
