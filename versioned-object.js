@@ -1,12 +1,28 @@
 define(["lib/lodash", "lib/jsondiffpatch.min", function (lo, diffService) {
   this.VersionedObject = function VersionedObject(json, tagName, parent) {
     var self = this;
-    Object.defineProperty(this, "version", {value: parent ? parent.version + 1: 1});
-    Object.defineProperty(this, "tag", {value: tagName? tagName: ""});
-    Object.defineProperty(this, "older", {value: parent});
+    Object.defineProperty(this, "version", {value: parent ? parent.version + 1: 1, writable: true});
+    Object.defineProperty(this, "tag", {value: tagName? tagName: "", writable: true});
+    Object.defineProperty(this, "older", {value: parent, writable: true});
     lo.forIn(json, function (v, k) {
       self[k] = v;
     });
+
+    this.detach = function(tag) {
+      this.version = 1;
+      this.older = null;
+      this.tag = tag ? tag : "";
+      return this;
+    };
+
+    this.inspect = function() {
+      var raw = {};
+      lo.forIn(this, function (v, k) {
+        if (!lo.isFunction(v))
+          raw[k] = v;
+      });
+      return raw;
+    };
 
     this.setTag = function(tagName) {
       this.tag = tagName;
